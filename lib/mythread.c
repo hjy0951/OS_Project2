@@ -171,6 +171,7 @@ void mythread_join(int tid)
   printf("join\n");
   int prev = current_thread_id;
   current_thread_id = tid;
+
   if(prev == current_thread_id){
     while(tcbs[current_thread_id]->finished == 0){
       if(tcbs[current_thread_id]->finished == 1)
@@ -178,6 +179,11 @@ void mythread_join(int tid)
     }
   }
   else{
+    if(tcbs[current_thread_id]->finished == 1){
+      printf("already finished thread %d\n", current_thread_id);
+      return;
+    }
+    printf("swap and join\n");
     swapcontext(tcbs[prev]->ucp, tcbs[current_thread_id]->ucp);
     while(tcbs[current_thread_id]->finished == 0){
       if(tcbs[current_thread_id]->finished == 1)
